@@ -1,9 +1,204 @@
+## Changes in [2.5.1](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/2.5.1) : ##
+
+* SDK’s System.Net.Http version now matches what is defined in the NuGet package
+* Allow write requests to fallback to a different region if the original one fails
+* Add session retry policy for write request
+
+## Changes in [2.4.2](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/2.4.2) : ##
+
+* Made assembly version and file version same as nuget package version.
+
+## Changes in [2.4.1](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/2.4.1) : ##
+
+* Fixes tracing race condition for queries which caused empty pages
+
+## Changes in [2.4.0](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/2.4.0) : ##
+
+* Increased decimal precision size for LINQ queries.
+* Added new classes CompositePath, CompositePathSortOrder, SpatialSpec, SpatialType and PartitionKeyDefinitionVersion
+* Added TimeToLivePropertyPath to DocumentCollection
+* Added CompositeIndexes and SpatialIndexes to IndexPolicy
+* Added Version to PartitionKeyDefinition
+* Added None to PartitionKey
+
+## Changes in [2.3.0](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/2.3.0) : ##
+
+* Added IdleTcpConnectionTimeout, OpenTcpConnectionTimeout, MaxRequestsPerTcpConnection and MaxTcpConnectionsPerEndpoint to ConnectionPolicy.
+
+## Changes in [2.2.3](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/2.2.3) : ##
+
+* Diagnostics improvements
+
+## Changes in [2.2.2](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/2.2.2) : ##
+
+* Added environment variable setting “POCOSerializationOnly”.
+* Removed DocumentDB.Spatial.Sql.dll and now included in Microsoft.Azure.Documents.ServiceInterop.dll
+
+## Changes in [2.2.1](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/2.2.1) : ##
+
+* Improvement in retry logic during failover for StoredProcedure execute calls.
+
+* Made DocumentClientEventSource singleton. 
+
+* Fix GatewayAddressCache timeout not honoring ConnectionPolicy RequestTimeout.
+
+## Changes in [2.2.0](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/2.2.0) : ##
+
+* For direct/TCP transport diagnostics, added TransportException, an internal exception type of the SDK. When present in exception messages, this type prints additional information for troubleshooting client connectivity problems.
+
+* Added new constuctor overload which takes a HttpMessageHandler, a HTTP handler stack to use for sending HttpClient requests (e.g., HttpClientHandler).
+
+* Fix bug where header with null values were not being handled properly.
+
+* Improved collection cache validation.
+
+## Changes in [2.1.3](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/2.1.3) : ##
+
+* Updated System.Net.Security to 4.3.2.
+
+## Changes in [2.1.2](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/2.1.2) : ##
+
+* Diagnostic tracing improvements.
+
+## Changes in [2.1.1](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/2.1.1) : ##
+
+* Added more resilience to Multi-region request transient failures.   
+
+## Changes in [2.1.0](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/2.1.0) : ##
+
+* Added Multi-region write support.
+* Cross partition query performance improvements with TOP and MaxBufferedItemCount.
+
+## Changes in [2.0.0](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/2.0.0) : ##
+
+* Added request cancellation support.
+* Added SetCurrentLocation to ConnectionPolicy, which automatically populates the preferred locations based on the region.
+* Fixed Bug in Cross Partition Queries with Min/Max and a filter that matches no documents on an individual partition.
+* DocumentClient methods now have parity with IDocumentClient.
+* Updated direct TCP transport stack to reduce the number of connections established.
+* Added support for Direct Mode TCP for non-Windows clients.
+
+## Changes in [2.0.0-preview2](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/2.0.0-preview2) : ##
+
+* Added request cancellation support.
+* Added SetCurrentLocation to ConnectionPolicy, which automatically populates the preferred locations based on the region.
+* Fixed Bug in Cross Partition Queries with Min/Max and a filter that matches no documents on an individual partition.
+
+## Changes in [2.0.0-preview](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/2.0.0-preview) : ##
+
+* DocumentClient methods now have parity with IDocumentClient.
+* Updated direct TCP transport stack to reduce the number of connections established.
+* Added support for Direct Mode TCP for non-Windows clients.
+
+## Changes in [1.22.0](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/1.21.1) : ##
+
+* Added ConsistencyLevel Property to FeedOptions.
+* Added JsonSerializerSettings to RequestOptions and FeedOptions.
+* Added EnableReadRequestsFallback to ConnectionPolicy.
+
+## Changes in [1.21.1](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/1.21.1) : ##
+
+* Fixed KeyNotFoundException for cross partition order by queries in corner cases.
+* Fixed bug where JsonPropery attribute in select clause for LINQ queries was not being honored.
+
+## Changes in [1.20.2](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/1.20.2) : ##
+
+* Fixed bug that is hit under certain race conditions, that results in intermittent "Microsoft.Azure.Documents.NotFoundException: The read session is not available for the input session token" errors when using Session consistency level.
+
+## Changes in [1.20.1](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/1.20.1) : ##
+
+* Improved cross partition query performance when the MaxDegreeOfParallelism property is set to -1 in FeedOptions.
+* Added a new ToString() function to QueryMetrics.
+* Exposed partition statistics on reading collections.
+* Added PartitionKey property to ChangeFeedOptions.
+* Minor bug fixes.
+
+## Changes in [1.19.1](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/1.19.1) : ##
+
+* Adds the ability to specify unique indexes for the documents by using UniqueKeyPolicy property on the DocumentCollection.
+* Fixed a bug in which the custom JsonSerializer settings were not being honored for some queries and stored procedure execution.
+ 
+## Changes in [1.19.0](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/1.19.0) : ##
+
+* Branding change from Azure DocumentDB to Azure Cosmos DB in the API Reference documentation, metadata information in assemblies, and the NuGet package. 
+* Expose diagnostic information and latency from the response of requests sent with direct connectivity mode. The property names are RequestDiagnosticsString and RequestLatency on ResourceResponse class.
+* This SDK version requires the latest version of Azure Cosmos DB Emulator available for download from https://aka.ms/cosmosdb-emulator.
+
+## Changes in [1.18.1](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/1.18.1) : ##
+
+* Internal changes for Microsoft friends assemblies.
+
+## Changes in [1.18.0](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/1.19.0) : ##
+
+* Added several reliability fixes and improvements.
+
+## Changes in [1.17.0](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/1.17.0) : ##
+
+* Added support for PartitionKeyRangeId as a FeedOption for scoping query results to a specific partition key range value. 
+* Added support for StartTime as a ChangeFeedOption to start looking for the changes after that time. 
+
+## Changes in [1.16.1](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/1.16.1) : ##
+- Fixed an issue in the JsonSerializable class that may cause a stack overflow exception. 
+
+## Changes in [1.16.0](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/1.16.0) : ##
+- Fixed an issue that required recompiling of the application due to the introduction of JsonSerializerSettings as an optional parameter in the DocumentClient constructor.
+- Marked the DocumentClient constructor obsolete that required JsonSerializerSettings as the last parameter to allow for default values of ConnectionPolicy and ConsistencyLevel parameters when passing in JsonSerializerSettings parameter.
+
+## Changes in [1.15.0](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/1.15.0) : ##
+- Added support for specifying custom JsonSerializerSettings while instantiating DocumentClient.
+
+## Changes in 1.14.1 : ##
+- Fixed an issue that affected x64 machines that don’t support SSE4 instruction and throw an SEHException when running Azure Cosmos DB DocumentDB API queries.
+
+## Changes in 1.14.0 : ##
+- Added support for Request Unit per Minute (RU/m) feature.
+- Added support for a new consistency level called ConsistentPrefix.
+- Added support for query metrics for individual partitions.
+- Added support for limiting the size of the continuation token for queries.
+- Added support for more detailed tracing for failed requests.
+- Made some performance improvements in the SDK.
+
+## Changes in 1.13.4 : ##
+- Functionally same as 1.13.3. Made some internal changes.
+
+## Changes in 1.13.3 : ##
+- Functionally same as 1.13.2. Made some internal changes.
+
+## Changes in 1.13.2 : ##
+- Fixed an issue that ignored the PartitionKey value provided in FeedOptions for aggregate queries.
+- Fixed an issue in transparent handling of partition management during mid-flight cross-partition Order By query execution.
+
+## Changes in 1.13.1 : ##
+- Fixed an issue which caused deadlocks in some of the async APIs when used inside ASP.NET context.
+
+## Changes in 1.13.0 : ##
+- Fixes to make SDK more resilient to automatic failover under certain conditions.
+
+## Changes in 1.12.2 : ##
+- Fix for an issue that occasionally causes a WebException: The remote name could not be resolved.
+- Added the support for directly reading a typed document by adding new overloads to ReadDocumentAsync API.
+
+## Changes in 1.12.1 : ##
+- Added LINQ support for aggregation queries (COUNT, MIN, MAX, SUM, and AVG).
+- Fix for a memory leak issue for the ConnectionPolicy object caused by the use of event handler.
+- Fix for an issue wherein UpsertAttachmentAsync was not working when ETag was used.
+- Fix for an issue wherein cross partition order-by query continuation was not working when sorting on string field.
+
+## Changes in 1.12.0 : ##
+- Added support for aggregation queries (COUNT, MIN, MAX, SUM, and AVG). See [Aggregation support](https://docs.microsoft.com/en-us/azure/documentdb/documentdb-sql-query#Aggregates).
+- Lowered minimum throughput on partitioned collections from 10,100 RU/s to 2500 RU/s.
+
+## Changes in 1.11.4 : ##
+
+- Fix for an issue wherein some of the cross-partition queries were failing in the 32-bit host process.
+- Fix for an issue wherein the session container was not being updated with the token for failed requests in Gateway mode.
+- Fix for an issue wherein a query with UDF calls in projection was failing in some cases.
+
 ## Changes in 1.11.3 : ##
 
 - Fix for an issue wherein the session container was not being updated with the token for failed requests. 
 - Added support for the SDK to work in a 32-bit host process. Note that if you use cross partition queries, 64-bit host processing is recommended for improved performance.
 - Improved performance for scenarios involving queries with a large number of partition key values in an IN expression.
-- Populated various resource quota stats in the resource response for document collection read requests when PopulateQuotaInfo request option is set.
 
 ## Changes in 1.11.1 : ##
 

@@ -50,11 +50,12 @@
     
     public class Program
     {
+        private static readonly string databaseName = "samples";
+        private static readonly string collectionName = "document-samples";
+
         // Read config
         private static readonly string endpointUrl = ConfigurationManager.AppSettings["EndPointUrl"];
         private static readonly string authorizationKey = ConfigurationManager.AppSettings["AuthorizationKey"];
-        private static readonly string databaseName = ConfigurationManager.AppSettings["DatabaseId"];
-        private static readonly string collectionName = ConfigurationManager.AppSettings["CollectionId"];
 
         //Reusable instance of DocumentClient which represents the connection to a DocumentDB endpoint
         private static DocumentClient client;
@@ -112,8 +113,10 @@
             await RunBasicOperationsOnDynamicObjects();
 
             await UseETags();
+
+            await UseConsistencyLevels();
         }
-        
+
         /// <summary>
         /// 1. Basic CRUD operations on a document
         /// 1.1 - Create a document
@@ -181,12 +184,18 @@
             //******************************************************************************************************************
             Console.WriteLine("\n1.3 - Reading all documents in a collection");
 
-            foreach (Document document in await client.ReadDocumentFeedAsync(
-                UriFactory.CreateDocumentCollectionUri(databaseName, collectionName), 
-                new FeedOptions { MaxItemCount = 10 }))
+            string continuationToken = null;
+            do
             {
-                Console.WriteLine(document);
-            }
+                var feed = await client.ReadDocumentFeedAsync(
+                    UriFactory.CreateDocumentCollectionUri(databaseName, collectionName),
+                    new FeedOptions { MaxItemCount = 10, RequestContinuation = continuationToken });
+                continuationToken = feed.ResponseContinuation;
+                foreach (Document document in feed)
+                {
+                    Console.WriteLine(document);
+                }
+            } while (continuationToken != null);
         }
 
         private static SalesOrder QueryDocuments()
@@ -490,6 +499,35 @@
             Console.WriteLine("Read doc with StatusCode of {0}", response.StatusCode);
         }
 
+        private static async Task UseConsistencyLevels()
+        {
+            // Override the consistency level for a read request
+            ResourceResponse<Document> response = await client.ReadDocumentAsync(
+                UriFactory.CreateDocumentUri(databaseName, collectionName, "SalesOrder2"),
+                new RequestOptions
+                {
+                    PartitionKey = new PartitionKey("Account2"),
+                    ConsistencyLevel = ConsistencyLevel.Eventual
+                });
+
+            SalesOrder querySalesOrder = client.CreateDocumentQuery<SalesOrder>(
+                UriFactory.CreateDocumentCollectionUri(databaseName, collectionName), new FeedOptions {  })
+                .Where(so => so.AccountNumber == "Account1")
+                .AsEnumerable()
+                .First();
+
+            // Override the default consistency level for the client
+            DocumentClient newClient = new DocumentClient(new Uri(endpointUrl), authorizationKey, null, ConsistencyLevel.Eventual);
+
+            // Read is now at eventual consistency
+            response = await newClient.ReadDocumentAsync(
+                UriFactory.CreateDocumentUri(databaseName, collectionName, "SalesOrder2"),
+                new RequestOptions
+                {
+                    PartitionKey = new PartitionKey("Account2")
+                });
+        }
+
         private static void Cleanup()
         {
             client.DeleteDatabaseAsync(UriFactory.CreateDatabaseUri(databaseName)).Wait();
@@ -497,10 +535,7 @@
 
         private static async Task Initialize()
         {
-            await DeleteDatabaseIfExists(databaseName);
-
-            await client.CreateDatabaseAsync(new Database { Id = databaseName });
-
+            await client.CreateDatabaseIfNotExistsAsync(new Database { Id = databaseName });
 
             // We create a partitioned collection here which needs a partition key. Partitioned collections
             // can be created with very high values of provisioned throughput (up to OfferThroughput = 250,000)
@@ -518,27 +553,10 @@
             collectionDefinition.IndexingPolicy = new IndexingPolicy(new RangeIndex(DataType.String) { Precision = -1 });
 
             // Create with a throughput of 1000 RU/s
-            await client.CreateDocumentCollectionAsync(
+            await client.CreateDocumentCollectionIfNotExistsAsync(
                 UriFactory.CreateDatabaseUri(databaseName),
                 collectionDefinition,
                 new RequestOptions { OfferThroughput = 1000 });
-        }
-
-        private static async Task<Database> DeleteDatabaseIfExists(string databaseId)
-        {
-            var databaseUri = UriFactory.CreateDatabaseUri(databaseId);
-
-            Database database = client.CreateDatabaseQuery()
-                .Where(db => db.Id == databaseId)
-                .ToArray()
-                .FirstOrDefault();
-
-            if (database != null)
-            {
-                await client.DeleteDatabaseAsync(UriFactory.CreateDatabaseUri(databaseId));
-            }
-
-            return database;
         }
     }
 }
